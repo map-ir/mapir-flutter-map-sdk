@@ -81,7 +81,7 @@ class SHURLProtocol: URLProtocol {
     }
 }
 
-let userAgent: String = {
+fileprivate let userAgent: String = {
     var components: [String] = []
 
     if let appName = Bundle.main.infoDictionary?["CFBundleName"] as? String ?? Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String {
@@ -121,7 +121,7 @@ let userAgent: String = {
     return components.joined(separator: " ")
 }()
 
-let sdkIdentifier: String = {
+fileprivate let sdkIdentifier: String = {
     var components: [String] = []
 
     let system: String
