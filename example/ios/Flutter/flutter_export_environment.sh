@@ -1,8 +1,8 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
 export "FLUTTER_ROOT=/Users/mralirezaa/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/mralirezaa/Desktop/flutter-mapbox-gl/example"
-export "FLUTTER_TARGET=/Users/mralirezaa/Desktop/flutter-mapbox-gl/example/lib/main.dart"
+export "FLUTTER_APPLICATION_PATH=/Users/mralirezaa/Developer/Mapir/mapir-flutter-map-sdk/example"
+export "FLUTTER_TARGET=/Users/mralirezaa/Developer/Mapir/mapir-flutter-map-sdk/example/lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "SYMROOT=${SOURCE_ROOT}/../build/ios"
 export "FLUTTER_FRAMEWORK_DIR=/Users/mralirezaa/flutter/bin/cache/artifacts/engine/ios"

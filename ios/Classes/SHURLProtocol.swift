@@ -15,91 +15,10 @@ let kMapirAPIBaseURL = "map.ir"
 
 class SHURLProtocol: URLProtocol {
 
-    static let sdkIdentifier: String = {
-        var components: [String] = []
-
-        let system: String
-        #if os(OSX)
-        system = "macOS"
-        #elseif os(iOS)
-        system = "iOS"
-        #elseif os(watchOS)
-        system = "watchOS"
-        #elseif os(tvOS)
-        system = "tvOS"
-        #endif
-
-        let chip: String
-        #if arch(x86_64)
-        chip = "x86_64"
-        #elseif arch(arm)
-        chip = "arm"
-        #elseif arch(arm64)
-        chip = "arm64"
-        #elseif arch(i386)
-        chip = "i386"
-        #endif
-        let systemVersion = ProcessInfo().operatingSystemVersion
-        components.append("\(system)/\(systemVersion.majorVersion).\(systemVersion.minorVersion).\(systemVersion.patchVersion)(\(chip))")
-
-        let libraryBundle: Bundle? = Bundle(for: SHMapView.self)
-        if let libraryName = libraryBundle?.infoDictionary?["CFBundleName"] as? String, let version = libraryBundle?.infoDictionary?["CFBundleShortVersionString"] as? String {
-            components.append("\(libraryName)/\(version)")
-        }
-
-        if let appName = Bundle.main.infoDictionary?["CFBundleName"] as? String ?? Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String {
-            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-            components.append("\(appName)/\(version)")
-        }
-
-        return components.joined(separator: "-")
-    }()
-
-    static let userAgent: String = {
-        var components: [String] = []
-
-        if let appName = Bundle.main.infoDictionary?["CFBundleName"] as? String ?? Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String {
-            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-            components.append("\(appName)/\(version)")
-        }
-
-        let libraryBundle: Bundle? = Bundle(for: SHMapView.self)
-        if let libraryName = libraryBundle?.infoDictionary?["CFBundleName"] as? String, let version = libraryBundle?.infoDictionary?["CFBundleShortVersionString"] as? String {
-            components.append("\(libraryName)/\(version)")
-        }
-
-        let system: String
-        #if os(OSX)
-        system = "macOS"
-        #elseif os(iOS)
-        system = "iOS"
-        #elseif os(watchOS)
-        system = "watchOS"
-        #elseif os(tvOS)
-        system = "tvOS"
-        #endif
-
-        let chip: String
-        #if arch(x86_64)
-        chip = "x86_64"
-        #elseif arch(arm)
-        chip = "arm"
-        #elseif arch(arm64)
-        chip = "arm64"
-        #elseif arch(i386)
-        chip = "i386"
-        #endif
-        let systemVersion = ProcessInfo().operatingSystemVersion
-        components.append("\(system)/\(systemVersion.majorVersion).\(systemVersion.minorVersion).\(systemVersion.patchVersion)(\(chip))")
-
-        return components.joined(separator: " ")
-    }()
-
-
     weak var activeTask: URLSessionTask?
 
-    lazy var session: URLSession = {
-        let session = URLSession(configuration: .ephemeral, delegate: self, delegateQueue: nil)
+    static let session: URLSession = {
+        let session = URLSession(configuration: .ephemeral)
         return session
     }()
 
@@ -111,8 +30,13 @@ class SHURLProtocol: URLProtocol {
     }
 
     override class func canInit(with request: URLRequest) -> Bool {
-        if let host = request.url?.host, host.contains(kMapirAPIBaseURL) {
-            return true
+        if let regex = try? NSRegularExpression(pattern: "^([a-zA-Z0-9-]+\\.)*map.ir$", options: .caseInsensitive) {
+            if let host = request.url?.host,
+                regex.firstMatch(in: host,
+                                 options: .anchored,
+                                 range: NSRange(location: 0, length: host.count)) != nil {
+                return true
+            }
         }
         return false
     }
@@ -132,7 +56,23 @@ class SHURLProtocol: URLProtocol {
 
     override func startLoading() {
         let urlRequest = (request as NSURLRequest).mutableCopy() as! NSMutableURLRequest
-        activeTask = session.dataTask(with: urlRequest as URLRequest)
+        activeTask = SHURLProtocol.session.dataTask(with: urlRequest as URLRequest) { [weak self] (data, response, error) in
+            guard let self = self else { return }
+            if let error = error {
+                self.client?.urlProtocol(self, didFailWithError: error)
+            }
+
+            if let response = response {
+                self.client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            }
+
+            if let data = data {
+                self.client?.urlProtocol(self, didLoad: data)
+            }
+
+            self.client?.urlProtocolDidFinishLoading(self)
+        }
+
         activeTask?.resume()
     }
 
@@ -141,25 +81,83 @@ class SHURLProtocol: URLProtocol {
     }
 }
 
-extension SHURLProtocol: URLSessionDataDelegate {
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        client?.urlProtocol(self, didLoad: data)
+let userAgent: String = {
+    var components: [String] = []
+
+    if let appName = Bundle.main.infoDictionary?["CFBundleName"] as? String ?? Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        components.append("\(appName)/\(version)")
     }
 
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let response = task.response {
-            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-        }
-
-        client?.urlProtocolDidFinishLoading(self)
+    let libraryBundle: Bundle? = Bundle(for: SHMapView.self)
+    if let libraryName = libraryBundle?.infoDictionary?["CFBundleName"] as? String, let version = libraryBundle?.infoDictionary?["CFBundleShortVersionString"] as? String {
+        components.append("\(libraryName)/\(version)")
     }
 
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
-        self.client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-        completionHandler(.allow)
+    let system: String
+    #if os(OSX)
+    system = "macOS"
+    #elseif os(iOS)
+    system = "iOS"
+    #elseif os(watchOS)
+    system = "watchOS"
+    #elseif os(tvOS)
+    system = "tvOS"
+    #endif
+
+    let chip: String
+    #if arch(x86_64)
+    chip = "x86_64"
+    #elseif arch(arm)
+    chip = "arm"
+    #elseif arch(arm64)
+    chip = "arm64"
+    #elseif arch(i386)
+    chip = "i386"
+    #endif
+    let systemVersion = ProcessInfo().operatingSystemVersion
+    components.append("\(system)/\(systemVersion.majorVersion).\(systemVersion.minorVersion).\(systemVersion.patchVersion)(\(chip))")
+
+    return components.joined(separator: " ")
+}()
+
+let sdkIdentifier: String = {
+    var components: [String] = []
+
+    let system: String
+    #if os(OSX)
+    system = "macOS"
+    #elseif os(iOS)
+    system = "iOS"
+    #elseif os(watchOS)
+    system = "watchOS"
+    #elseif os(tvOS)
+    system = "tvOS"
+    #endif
+
+    let chip: String
+    #if arch(x86_64)
+    chip = "x86_64"
+    #elseif arch(arm)
+    chip = "arm"
+    #elseif arch(arm64)
+    chip = "arm64"
+    #elseif arch(i386)
+    chip = "i386"
+    #endif
+    let systemVersion = ProcessInfo().operatingSystemVersion
+    components.append("\(system)/\(systemVersion.majorVersion).\(systemVersion.minorVersion).\(systemVersion.patchVersion)(\(chip))")
+
+    let libraryBundle: Bundle? = Bundle(for: SHMapView.self)
+    if let libraryName = libraryBundle?.infoDictionary?["CFBundleName"] as? String, let version = libraryBundle?.infoDictionary?["CFBundleShortVersionString"] as? String {
+        components.append("\(libraryName)(MapirFlutter)/\(version)")
     }
 
-    func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
-        self.client?.urlProtocol(self, wasRedirectedTo: request, redirectResponse: response)
+    if let appName = Bundle.main.infoDictionary?["CFBundleName"] as? String ?? Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        components.append("\(appName)/\(version)")
     }
-}
+
+    return components.joined(separator: "-")
+}()
+

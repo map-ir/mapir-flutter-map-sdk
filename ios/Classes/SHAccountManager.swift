@@ -14,9 +14,7 @@ public class SHAccountManager: NSObject {
     public static let shared = SHAccountManager()
 
     public lazy var apiKey: String? = {
-        Bundle.main.object(forInfoDictionaryKey: "MapirAPIKey") as? String ??
-        Bundle.main.object(forInfoDictionaryKey: "MAPIRAccessToken") as? String ??
-        nil
+        Bundle.main.object(forInfoDictionaryKey: "MapirAPIKey") as? String
     }()
 
     public static var apiKey: String? { return shared.apiKey }

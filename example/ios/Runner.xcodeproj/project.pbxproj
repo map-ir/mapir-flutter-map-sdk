@@ -162,6 +162,7 @@
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				889EE4D7842958F998B4C2E7 /* [CP] Embed Pods Frameworks */,
+				C08A7BE123BCEB3300254AD4 /* Insert Mapi.ir API Key if needed */,
 			);
 			buildRules = (
 			);
@@ -297,6 +298,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+		};
+		C08A7BE123BCEB3300254AD4 /* Insert Mapi.ir API Key if needed */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "Insert Mapi.ir API Key if needed";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\n\nAPIKEY_KEY=\"MapirAPIKey\"\nINFOPLIST_PATH=\"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\nTEMP_INFOPLIST_PATH=\"temp.plist\"\n\nplutil -extract $APIKEY_KEY xml1 -s -o $TEMP_INFOPLIST_PATH $INFOPLIST_PATH &> /dev/null\n\nif [ $? -eq 0 ]; then\n    echo \"Map.ir API Key is definded in Info.plist file.\"\n    rm -rf $TEMP_INFOPLIST_PATH\nelse\n    echo \"Inserting Map.ir API key...\"\n    KEY_FILE=~/.mapir\n    KEY=\"$(cat $KEY_FILE 2>/dev/null)\"\n\n    if [ \"$KEY\" ]; then\n        plutil -replace $APIKEY_KEY -string $KEY $INFOPLIST_PATH\n        echo \"API key inserted.\"\n    else\n        echo \"❌ ERROR: Missing Map.ir API key.\"\n        echo \"In order to use example application you need an API key. create an account or login to your account at <https://corp.map.ir/registration>, create a project or open an existing one, then create a new file at $KEY_FILE, add your project's API key to the file.\"\n        exit 1\n    fi\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
