@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:mapir_gl/mapir_gl.dart';
 
 import 'page.dart';
 
@@ -22,7 +22,7 @@ class ScrollingMapPage extends Page {
 class ScrollingMapBody extends StatelessWidget {
   const ScrollingMapBody();
 
-  final LatLng center = const LatLng(32.080664, 34.9563837);
+  final LatLng center = const LatLng(35.702474, 51.369324);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class ScrollingMapBody extends StatelessWidget {
                   child: SizedBox(
                     width: 300.0,
                     height: 300.0,
-                    child: MapboxMap(
+                    child: MapirMap(
                       onMapCreated: onMapCreated,
                       initialCameraPosition: CameraPosition(
                         target: center,
@@ -75,7 +75,7 @@ class ScrollingMapBody extends StatelessWidget {
                   child: SizedBox(
                     width: 300.0,
                     height: 300.0,
-                    child: MapboxMap(
+                    child: MapirMap(
                       onMapCreated: onMapCreated,
                       initialCameraPosition: CameraPosition(
                         target: center,
@@ -98,7 +98,7 @@ class ScrollingMapBody extends StatelessWidget {
     );
   }
 
-  void onMapCreated(MapboxMapController controller) {
+  void onMapCreated(MapirMapController controller) {
     controller.addSymbol(SymbolOptions(
         geometry: LatLng(
           center.latitude,

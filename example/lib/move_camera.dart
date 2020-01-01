@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:mapir_gl/mapir_gl.dart';
 
 import 'page.dart';
 
@@ -23,9 +23,9 @@ class MoveCamera extends StatefulWidget {
 }
 
 class MoveCameraState extends State<MoveCamera> {
-  MapboxMapController mapController;
+  MapirMapController mapController;
 
-  void _onMapCreated(MapboxMapController controller) {
+  void _onMapCreated(MapirMapController controller) {
     mapController = controller;
   }
 
@@ -39,10 +39,13 @@ class MoveCameraState extends State<MoveCamera> {
           child: SizedBox(
             width: 300.0,
             height: 200.0,
-            child: MapboxMap(
+            child: MapirMap(
               onMapCreated: _onMapCreated,
               initialCameraPosition:
-                  const CameraPosition(target: LatLng(0.0, 0.0)),
+                  const CameraPosition(
+                    target: LatLng(36.473202, 52.355347), 
+                    zoom: 11
+                  ),
             ),
           ),
         ),
@@ -57,7 +60,7 @@ class MoveCameraState extends State<MoveCamera> {
                       CameraUpdate.newCameraPosition(
                         const CameraPosition(
                           bearing: 270.0,
-                          target: LatLng(51.5160895, -0.1294527),
+                          target: LatLng(35.702474, 51.369324),
                           tilt: 30.0,
                           zoom: 17.0,
                         ),
@@ -70,7 +73,7 @@ class MoveCameraState extends State<MoveCamera> {
                   onPressed: () {
                     mapController.moveCamera(
                       CameraUpdate.newLatLng(
-                        const LatLng(56.1725505, 10.1850512),
+                        const LatLng(35.735366, 51.212082),
                       ),
                     );
                   },
@@ -81,8 +84,8 @@ class MoveCameraState extends State<MoveCamera> {
                     mapController.moveCamera(
                       CameraUpdate.newLatLngBounds(
                         LatLngBounds(
-                          southwest: const LatLng(-38.483935, 113.248673),
-                          northeast: const LatLng(-8.982446, 153.823821),
+                          southwest: const LatLng(35.843421, 51.030807),
+                          northeast: const LatLng(35.774372, 50.841980),
                         ),
                         10.0,
                       ),
@@ -94,7 +97,7 @@ class MoveCameraState extends State<MoveCamera> {
                   onPressed: () {
                     mapController.moveCamera(
                       CameraUpdate.newLatLngZoom(
-                        const LatLng(37.4231613, -122.087159),
+                        const LatLng(36.274725, 50.001526),
                         11.0,
                       ),
                     );

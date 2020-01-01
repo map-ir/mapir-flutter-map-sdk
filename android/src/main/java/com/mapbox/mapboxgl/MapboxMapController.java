@@ -66,6 +66,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
+import okio.Buffer;
+import android.os.Build;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import com.mapbox.mapboxsdk.module.http.HttpRequestUtil;
 
 import static com.mapbox.mapboxgl.MapboxMapsPlugin.CREATED;
 import static com.mapbox.mapboxgl.MapboxMapsPlugin.DESTROYED;
@@ -117,6 +127,7 @@ final class MapboxMapController
   private final String styleStringInitial;
   private LocationComponent locationComponent = null;
   private LocationEngine locationEngine = null;
+  private static String userAgent;
 
   MapboxMapController(
     int id,
@@ -125,9 +136,11 @@ final class MapboxMapController
     PluginRegistry.Registrar registrar,
     MapboxMapOptions options,
     String styleStringInitial) {
-    Mapbox.getInstance(context, getAccessToken(context));
     this.id = id;
     this.context = context;
+    Mapbox.getInstance(this.context, null);
+    this.userAgent = userAgentString(this.context);
+    HttpRequestUtil.setOkHttpClient(getOkHttpClient(getAccessToken(this.context)));
     this.activityState = activityState;
     this.registrar = registrar;
     this.styleStringInitial = styleStringInitial;
@@ -140,20 +153,81 @@ final class MapboxMapController
       new MethodChannel(registrar.messenger(), "plugins.flutter.io/mapbox_maps_" + id);
     methodChannel.setMethodCallHandler(this);
     this.registrarActivityHashCode = registrar.activity().hashCode();
+
+    ImageView logoView = mapView.findViewById(com.mapbox.mapboxsdk.R.id.logoView);
+    logoView.setImageResource(R.drawable.ic_logo);
+    logoView.setMaxWidth(150);
+    logoView.setMaxHeight(50);
+
+    TextView copyRight = new TextView(context);
+    copyRight.setText("© Map © OpenStreetMap");
+    copyRight.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
+    copyRight.setTextSize(12);
+    copyRight.setPadding(0, 0, 12, 12);
+    mapView.addView(copyRight);
+
+    ImageView attrView = mapView.findViewById(com.mapbox.mapboxsdk.R.id.attributionView);
+    attrView.setClickable(false);
+    attrView.setEnabled(false);
+    attrView.setAlpha(0f);
+    attrView.setVisibility(View.GONE);
+  }
+
+  private OkHttpClient getOkHttpClient(final String apiKey) {
+    return new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+      @Override
+      public Response intercept(Chain chain) throws IOException {
+        return chain.proceed(chain.request().newBuilder()
+                .removeHeader("User-Agent")
+                .header("x-api-key", apiKey)
+                .header("User-Agent", userAgent)
+                .build());
+      }
+    }).build();
+  }
+
+  private String userAgentString(Context context) {
+    return toHumanReadableAscii(
+            String.format("Flutter/%s(%s)(%s)-MapSdk/%s-%s",
+                    Build.VERSION.SDK_INT,
+                    Build.VERSION.RELEASE,
+                    Build.CPU_ABI,
+                    "0.0.4",
+                    context.getPackageName())
+    );
+  }
+
+  @NonNull
+  private static String toHumanReadableAscii(String s) {
+    for (int i = 0, length = s.length(), c; i < length; i += Character.charCount(c)) {
+      c = s.codePointAt(i);
+      if (c > '\u001f' && c < '\u007f') {
+        continue;
+      }
+
+      Buffer buffer = new Buffer();
+      buffer.writeUtf8(s, 0, i);
+      for (int j = i; j < length; j += Character.charCount(c)) {
+        c = s.codePointAt(j);
+        buffer.writeUtf8CodePoint(c > '\u001f' && c < '\u007f' ? c : '?');
+      }
+      return buffer.readUtf8();
+    }
+    return s;
   }
 
   private static String getAccessToken(@NonNull Context context) {
     try {
       ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
       Bundle bundle = ai.metaData;
-      String token = bundle.getString("com.mapbox.token");
+      String token = bundle.getString("ir.map.apikey");
       if (token == null || token.isEmpty()) {
         throw new NullPointerException();
       }
       return token;
     } catch (Exception e) {
-      Log.e(TAG, "Failed to find an Access Token in the Application meta-data. Maps may not load correctly. " +
-        "Please refer to the installation guide at https://github.com/tobrun/flutter-mapbox-gl#mapbox-access-token " +
+      Log.e(TAG, "Failed to find an ApiKey in the Application meta-data. Maps may not load correctly. " +
+        "Please refer to the registration page and get new apikey at https://github.com/tobrun/flutter-mapbox-gl#mapbox-access-token " +
         "for troubleshooting advice." + e.getMessage());
     }
     return null;
@@ -300,13 +374,7 @@ final class MapboxMapController
   @Override
   public void setStyleString(String styleString) {
     //check if json, url or plain string:
-    if (styleString == null || styleString.isEmpty()) {
-      Log.e(TAG, "setStyleString - string empty or null");
-    } else if (styleString.startsWith("{") || styleString.startsWith("[")) {
-      mapboxMap.setStyle(new Style.Builder().fromJson(styleString), onStyleLoadedCallback);
-    } else {
-      mapboxMap.setStyle(new Style.Builder().fromUrl(styleString), onStyleLoadedCallback);
-    }
+    mapboxMap.setStyle(new Style.Builder().fromUri("https://map.ir/vector/styles/main/main_mobile_style.json"), onStyleLoadedCallback);
   }
 
   Style.OnStyleLoaded onStyleLoadedCallback = new Style.OnStyleLoaded() {

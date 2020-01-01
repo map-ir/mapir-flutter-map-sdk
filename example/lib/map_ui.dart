@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:mapir_gl/mapir_gl.dart';
 
 import 'page.dart';
 
 final LatLngBounds sydneyBounds = LatLngBounds(
-  southwest: const LatLng(-34.022631, 150.620685),
-  northeast: const LatLng(-33.571835, 151.325952),
+  southwest: const LatLng(35.606510, 51.525879),
+  northeast: const LatLng(35.782171, 51.111145),
 );
 
 class MapUiPage extends Page {
@@ -32,17 +32,17 @@ class MapUiBodyState extends State<MapUiBody> {
   MapUiBodyState();
 
   static final CameraPosition _kInitialPosition = const CameraPosition(
-    target: LatLng(-33.852, 151.211),
+    target: LatLng(35.702474, 51.369324),
     zoom: 11.0,
   );
 
-  MapboxMapController mapController;
+  MapirMapController mapController;
   CameraPosition _position = _kInitialPosition;
   bool _isMoving = false;
   bool _compassEnabled = true;
   CameraTargetBounds _cameraTargetBounds = CameraTargetBounds.unbounded;
   MinMaxZoomPreference _minMaxZoomPreference = MinMaxZoomPreference.unbounded;
-  String _styleString = MapboxStyles.MAPBOX_STREETS;
+  String _styleString = MapboxStyles.MAPIR_VECTOR;
   bool _rotateGesturesEnabled = true;
   bool _scrollGesturesEnabled = true;
   bool _tiltGesturesEnabled = true;
@@ -196,7 +196,7 @@ class MapUiBodyState extends State<MapUiBody> {
 
   @override
   Widget build(BuildContext context) {
-    final MapboxMap mapboxMap = MapboxMap(
+    final MapirMap mapboxMap = MapirMap(
       onMapCreated: onMapCreated,
       initialCameraPosition: _kInitialPosition,
       trackCameraPosition: true,
@@ -272,7 +272,7 @@ class MapUiBodyState extends State<MapUiBody> {
     );
   }
 
-  void onMapCreated(MapboxMapController controller) {
+  void onMapCreated(MapirMapController controller) {
     mapController = controller;
     mapController.addListener(_onMapChanged);
     _extractMapInfo();

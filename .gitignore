@@ -5,3 +5,6 @@ android/.project
 .idea/
 
 android/.settings/org.eclipse.buildship.core.prefs
+
+# Mac related:
+.DS_Store

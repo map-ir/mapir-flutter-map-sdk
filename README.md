@@ -25,7 +25,7 @@ Add Mapbox read token value in the application manifest ```android/app/src/main/
 
 ```<manifest ...
   <application ...
-    <meta-data android:name="com.mapbox.token" android:value="YOUR_TOKEN_HERE" />
+    <meta-data android:name="ir.map.apikey" android:value="YOUR_TOKEN_HERE" />
 ```
 
 #### iOS

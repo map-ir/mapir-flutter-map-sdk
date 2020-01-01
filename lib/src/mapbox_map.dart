@@ -4,10 +4,10 @@
 
 part of mapbox_gl;
 
-typedef void MapCreatedCallback(MapboxMapController controller);
+typedef void MapCreatedCallback(MapirMapController controller);
 
-class MapboxMap extends StatefulWidget {
-  const MapboxMap({
+class MapirMap extends StatefulWidget {
+  const MapirMap({
     @required this.initialCameraPosition,
     this.onMapCreated,
     this.onStyleLoadedCallback,
@@ -127,12 +127,12 @@ class MapboxMap extends StatefulWidget {
   final OnCameraTrackingChangedCallback onCameraTrackingChanged;
 
   @override
-  State createState() => _MapboxMapState();
+  State createState() => _MapirMapState();
 }
 
-class _MapboxMapState extends State<MapboxMap> {
-  final Completer<MapboxMapController> _controller =
-      Completer<MapboxMapController>();
+class _MapirMapState extends State<MapirMap> {
+  final Completer<MapirMapController> _controller =
+      Completer<MapirMapController>();
 
   _MapboxMapOptions _mapboxMapOptions;
 
@@ -171,7 +171,7 @@ class _MapboxMapState extends State<MapboxMap> {
   }
 
   @override
-  void didUpdateWidget(MapboxMap oldWidget) {
+  void didUpdateWidget(MapirMap oldWidget) {
     super.didUpdateWidget(oldWidget);
     final _MapboxMapOptions newOptions = _MapboxMapOptions.fromWidget(widget);
     final Map<String, dynamic> updates =
@@ -184,12 +184,12 @@ class _MapboxMapState extends State<MapboxMap> {
     if (updates.isEmpty) {
       return;
     }
-    final MapboxMapController controller = await _controller.future;
+    final MapirMapController controller = await _controller.future;
     controller._updateMapOptions(updates);
   }
 
   Future<void> onPlatformViewCreated(int id) async {
-    final MapboxMapController controller = await MapboxMapController.init(
+    final MapirMapController controller = await MapirMapController.init(
         id, widget.initialCameraPosition,
         onStyleLoadedCallback: widget.onStyleLoadedCallback,
         onMapClick: widget.onMapClick,
@@ -225,7 +225,7 @@ class _MapboxMapOptions {
     this.attributionButtonMargins,
   });
 
-  static _MapboxMapOptions fromWidget(MapboxMap map) {
+  static _MapboxMapOptions fromWidget(MapirMap map) {
     return _MapboxMapOptions(
       compassEnabled: map.compassEnabled,
       cameraTargetBounds: map.cameraTargetBounds,

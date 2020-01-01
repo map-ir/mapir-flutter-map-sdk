@@ -5,7 +5,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:mapir_gl/mapir_gl.dart';
 
 import 'page.dart';
 
@@ -28,13 +28,13 @@ class LineBody extends StatefulWidget {
 class LineBodyState extends State<LineBody> {
   LineBodyState();
 
-  static final LatLng center = const LatLng(-33.86711, 151.1947171);
+  static final LatLng center = const LatLng(35.702474, 51.369324);
 
-  MapboxMapController controller;
+  MapirMapController controller;
   int _lineCount = 0;
   Line _selectedLine;
 
-  void _onMapCreated(MapboxMapController controller) {
+  void _onMapCreated(MapirMapController controller) {
     this.controller = controller;
     controller.onLineTapped.add(_onLineTapped);
   }
@@ -71,10 +71,10 @@ class LineBodyState extends State<LineBody> {
     controller.addLine(
       LineOptions(
         geometry: [
-          LatLng(-33.86711, 151.1947171),
-          LatLng(-33.86711, 151.1947171),
-          LatLng(-32.86711, 151.1947171),
-          LatLng(-33.86711, 152.1947171),
+          LatLng(35.756543, 51.263580),
+          LatLng(35.733136, 51.337738),
+          LatLng(35.692437, 51.426315),
+          LatLng(35.633861, 51.436615),
         ],
         lineColor: "#ff0000",
         lineWidth: 14.0,
@@ -122,8 +122,8 @@ class LineBodyState extends State<LineBody> {
     controller.addLine(
       LineOptions(
         geometry: [
-          LatLng(37.4220, -122.0841),
-          LatLng(37.4240, -122.0941)
+          LatLng(35.733136, 51.337738),
+          LatLng(35.692437, 51.426315)
         ],
         lineColor: "#ff0000",
         lineWidth: 14.0,
@@ -142,11 +142,11 @@ class LineBodyState extends State<LineBody> {
           child: SizedBox(
             width: 300.0,
             height: 200.0,
-            child: MapboxMap(
+            child: MapirMap(
               onMapCreated: _onMapCreated,
               onStyleLoadedCallback: onStyleLoadedCallback,
               initialCameraPosition: const CameraPosition(
-                target: LatLng(-33.852, 151.211),
+                target: LatLng(35.702474, 51.369324),
                 zoom: 11.0,
               ),
             ),

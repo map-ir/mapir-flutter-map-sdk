@@ -26,8 +26,8 @@ typedef void OnCameraTrackingChangedCallback(MyLocationTrackingMode mode);
 /// Symbol tap events can be received by adding callbacks to [onSymbolTapped].
 /// Line tap events can be received by adding callbacks to [onLineTapped].
 /// Circle tap events can be received by adding callbacks to [onCircleTapped].
-class MapboxMapController extends ChangeNotifier {
-  MapboxMapController._(
+class MapirMapController extends ChangeNotifier {
+  MapirMapController._(
       this._id, MethodChannel channel, CameraPosition initialCameraPosition,
       {this.onStyleLoadedCallback,
       this.onMapClick,
@@ -40,7 +40,7 @@ class MapboxMapController extends ChangeNotifier {
     _channel.setMethodCallHandler(_handleMethodCall);
   }
 
-  static Future<MapboxMapController> init(
+  static Future<MapirMapController> init(
       int id, CameraPosition initialCameraPosition,
       {OnStyleLoadedCallback onStyleLoadedCallback,
       OnMapClickCallback onMapClick,
@@ -50,7 +50,7 @@ class MapboxMapController extends ChangeNotifier {
     final MethodChannel channel =
         MethodChannel('plugins.flutter.io/mapbox_maps_$id');
     await channel.invokeMethod('map#waitForMap');
-    return MapboxMapController._(id, channel, initialCameraPosition,
+    return MapirMapController._(id, channel, initialCameraPosition,
         onStyleLoadedCallback: onStyleLoadedCallback,
         onMapClick: onMapClick,
         onCameraTrackingDismissed: onCameraTrackingDismissed,
@@ -102,7 +102,7 @@ class MapboxMapController extends ChangeNotifier {
   bool _isCameraMoving = false;
 
   /// Returns the most recent camera position reported by the platform side.
-  /// Will be null, if [MapboxMap.trackCameraPosition] is false.
+  /// Will be null, if [MapirMap.trackCameraPosition] is false.
   CameraPosition get cameraPosition => _cameraPosition;
   CameraPosition _cameraPosition;
 

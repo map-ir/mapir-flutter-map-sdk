@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:mapir_gl/mapir_gl.dart';
 
 import 'page.dart';
 
@@ -24,9 +24,9 @@ class AnimateCamera extends StatefulWidget {
 }
 
 class AnimateCameraState extends State<AnimateCamera> {
-  MapboxMapController mapController;
+  MapirMapController mapController;
 
-  void _onMapCreated(MapboxMapController controller) {
+  void _onMapCreated(MapirMapController controller) {
     mapController = controller;
   }
 
@@ -40,10 +40,13 @@ class AnimateCameraState extends State<AnimateCamera> {
           child: SizedBox(
             width: 300.0,
             height: 200.0,
-            child: MapboxMap(
+            child: MapirMap(
               onMapCreated: _onMapCreated,
               initialCameraPosition:
-                  const CameraPosition(target: LatLng(0.0, 0.0)),
+                  const CameraPosition(
+                    target: LatLng(35.705820, 51.394043), 
+                    zoom: 10
+                    ),
             ),
           ),
         ),
@@ -58,7 +61,7 @@ class AnimateCameraState extends State<AnimateCamera> {
                       CameraUpdate.newCameraPosition(
                         const CameraPosition(
                           bearing: 270.0,
-                          target: LatLng(51.5160895, -0.1294527),
+                          target: LatLng(35.705820, 51.394043),
                           tilt: 30.0,
                           zoom: 17.0,
                         ),
@@ -71,7 +74,7 @@ class AnimateCameraState extends State<AnimateCamera> {
                   onPressed: () {
                     mapController.animateCamera(
                       CameraUpdate.newLatLng(
-                        const LatLng(56.1725505, 10.1850512),
+                        const LatLng(35.600648, 51.435585),
                       ),
                     );
                   },
@@ -82,8 +85,8 @@ class AnimateCameraState extends State<AnimateCamera> {
                     mapController.animateCamera(
                       CameraUpdate.newLatLngBounds(
                         LatLngBounds(
-                          southwest: const LatLng(-38.483935, 113.248673),
-                          northeast: const LatLng(-8.982446, 153.823821),
+                          southwest: const LatLng(35.860674, 51.059647),
+                          northeast: const LatLng(35.729234, 50.826187),
                         ),
                         10.0,
                       ),
@@ -95,7 +98,7 @@ class AnimateCameraState extends State<AnimateCamera> {
                   onPressed: () {
                     mapController.animateCamera(
                       CameraUpdate.newLatLngZoom(
-                        const LatLng(37.4231613, -122.087159),
+                        const LatLng(36.661259, 51.420822),
                         11.0,
                       ),
                     );

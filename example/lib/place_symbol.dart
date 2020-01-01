@@ -5,7 +5,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:mapir_gl/mapir_gl.dart';
 
 import 'page.dart';
 
@@ -28,13 +28,13 @@ class PlaceSymbolBody extends StatefulWidget {
 class PlaceSymbolBodyState extends State<PlaceSymbolBody> {
   PlaceSymbolBodyState();
 
-  static final LatLng center = const LatLng(-33.86711, 151.1947171);
+  static final LatLng center = const LatLng(35.702474, 51.369324);
 
-  MapboxMapController controller;
+  MapirMapController controller;
   int _symbolCount = 0;
   Symbol _selectedSymbol;
 
-  void _onMapCreated(MapboxMapController controller) {
+  void _onMapCreated(MapirMapController controller) {
     this.controller = controller;
     controller.onSymbolTapped.add(_onSymbolTapped);
   }
@@ -194,10 +194,10 @@ class PlaceSymbolBodyState extends State<PlaceSymbolBody> {
           child: SizedBox(
             width: 300.0,
             height: 200.0,
-            child: MapboxMap(
+            child: MapirMap(
               onMapCreated: _onMapCreated,
               initialCameraPosition: const CameraPosition(
-                target: LatLng(-33.852, 151.211),
+                target: LatLng(35.702474, 51.369324),
                 zoom: 11.0,
               ),
             ),
