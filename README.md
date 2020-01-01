@@ -1,27 +1,25 @@
-# Flutter Mapbox GL Native
+# Map.ir Flutter Plugin based on Mapbox GL
 
-> **Please note that this project is community driven and is not an official Mapbox product.** We welcome [feedback](https://github.com/tobrun/flutter-mapbox-gl/issues) and contributions.
-
-This Flutter plugin for [mapbox-gl-native](https://github.com/mapbox/mapbox-gl-native) enables
+This Flutter plugin for [Map.ir Map SDKs](https://github.com/map-ir) enables
 embedded interactive and customizable vector maps inside a Flutter widget by embedding Android and iOS views.
 
 ![screenshot.png](screenshot.png)
 
 ## Install
-This project is available on [pub.dartlang](https://pub.dartlang.org/packages/mapbox_gl), follow the [instructions](https://flutter.dev/docs/development/packages-and-plugins/using-packages#adding-a-package-dependency-to-an-app) to integrate a package into your flutter application.
+This project is available on [pub.dartlang](https://pub.dartlang.org/packages/mapir_gl), follow the [instructions](https://flutter.dev/docs/development/packages-and-plugins/using-packages#adding-a-package-dependency-to-an-app) to integrate a package into your flutter application.
 
 ### Running example app
 
 - Install [Flutter](https://flutter.io/get-started/) and validate its installation with `flutter doctor`
-- Clone this repository with `git clone git@github.com:mapbox/flutter-mapbox-gl.git`
-- Run the app with `cd flutter_mapbox/example && flutter run`
+- Clone this repository with `git clone git@github.com:map-ir/mapir-flutter-map-sdk.git`
+- Run the app with `cd mapir-flutter-map-sdk/example && flutter run`
 
-#### Mapbox Access Token
+#### Mpair Access Token
 
-This project uses Mapbox vector tiles, which requires a Mapbox account and a Mapbox access token. Obtain a free access token on [your Mapbox account page](https://www.mapbox.com/account/access-tokens/).
+This project uses Map.ir vector tiles, which requires a Map.ir account and an API key. Obtain a free access token on [Map.ir App Registration](https://corp.map.ir/registration).
 
 ##### Android
-Add Mapbox read token value in the application manifest ```android/app/src/main/AndroidManifest.xml:```
+Add Mapi.ir read token value in the application manifest ```android/app/src/main/AndroidManifest.xml:```
 
 ```<manifest ...
   <application ...
@@ -34,7 +32,7 @@ Add these lines to your Info.plist
 ```plist
 <key>io.flutter.embedded_views_preview</key>
 <true/>
-<key>MGLMapboxAccessToken</key>
+<key>MapirAPIKey</key>
 <string>YOUR_TOKEN_HERE</string>
 ```
 
@@ -55,8 +53,6 @@ Add these lines to your Info.plist
 
 Support for offline maps is available by *"side loading"* the required map tiles and including them in your `assets` folder.
 
-* Create your tiles package by following the guide available [here](https://docs.mapbox.com/ios/maps/overview/offline/).
-
 * Place the tiles.db file generated in step one in your assets directory and add a reference to it in your `pubspec.yml` file.
 
 ```
@@ -76,20 +72,24 @@ Support for offline maps is available by *"side loading"* the required map tiles
 
 ## Documentation
 
-This README file currently houses all of the documentation for this Flutter project. Please visit [mapbox.com/android-docs](https://www.mapbox.com/android-docs/) if you'd like more information about the Mapbox Maps SDK for Android and [mapbox.com/ios-sdk](https://www.mapbox.com/ios-sdk/) for more information about the Mapbox Maps SDK for iOS.
+Please visit [Map.ir Support](https://support.map.ir/developers/flutter/) for this flutter plugin, [iOS Maps SDK docs](https://support.map.ir/developers/ios/) and [Android Maps SDK docs](https://support.map.ir/developers/android/) for more info about native SDKs.
+
+Visit [mapbox.com/android-docs](https://www.mapbox.com/android-docs/) if you'd like more information about the Mapbox Maps SDK for Android and [mapbox.com/ios-sdk](https://www.mapbox.com/ios-sdk/) for more information about the Mapbox Maps SDK for iOS.
 
 ## Getting Help
 
 - **Need help with your code?**: Look for previous questions on the [#mapbox tag](https://stackoverflow.com/questions/tagged/mapbox+android) — or [ask a new question](https://stackoverflow.com/questions/tagged/mapbox+android).
-- **Have a bug to report?** [Open an issue](https://github.com/tobrun/flutter-mapbox-gl/issues/new). If possible, include a full log and information which shows the issue.
-- **Have a feature request?** [Open an issue](https://github.com/tobrun/flutter-mapbox-gl/issues/new). Tell us what the feature should do and why you want the feature.
+- **Have a bug to report?** [Open an issue](https://github.com/map-ir/mapir-flutter-map-sdk/issues/new). If possible, include a full log and information which shows the issue.
+- **Have a feature request?** [Open an issue](https://github.com/map-ir/mapir-flutter-map-sdk/issues/new). Tell us what the feature should do and why you want the feature.
 
 ## Sample code
 
-[This repository's example library](https://github.com/tobrun/flutter-mapbox-gl/tree/master/example/lib) is currently the best place for you to find reference code for this project.
+[This repository's example library](https://github.com/map-ir/mapir-flutter-map-sdk/tree/master/example/lib) is currently the best place for you to find reference code for this project. See other samples at [Flutter docs](https://support.map.ir/developers/flutter/examples).
 
+<!--
 ## Contributing
 
 We welcome contributions to this repository!
 
 If you're interested in helping build this Mapbox/Flutter integration, please read [the contribution guide](https://github.com/tobrun/flutter-mapbox-gl/blob/master/CONTRIBUTING.md) to learn how to get started.
+-->
