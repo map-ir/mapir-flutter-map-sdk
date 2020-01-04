@@ -3,7 +3,7 @@
 This Flutter plugin for [Map.ir Map SDKs](https://github.com/map-ir) enables
 embedded interactive and customizable vector maps inside a Flutter widget by embedding Android and iOS views.
 
-![screenshot.png](screenshot.png)
+![screenshot.png](https://support.map.ir/wp-content/uploads/2020/01/FlutterBasicMapScreenShot-e1578121281391.jpg)
 
 ## Install
 This project is available on [pub.dartlang](https://pub.dartlang.org/packages/mapir_gl), follow the [instructions](https://flutter.dev/docs/development/packages-and-plugins/using-packages#adding-a-package-dependency-to-an-app) to integrate a package into your flutter application.
